@@ -1,8 +1,23 @@
 """
-preps.
+Preps and posts.
 """
 
+using Colors
+
+export colour_labeled_image
 export extract_coords
+
+
+"""
+function colour_labeled_image(img_labels::Array{Int, 2})
+"""
+function colour_labeled_image(img_labels::Array{Int, 2})
+    colourmap = colormap("Blues", 5000)
+    mask = @. ifelse(img_labels < 0, - img_labels % 5000, 1)
+    img_coloured = colourmap[mask]
+    img_coloured[img_labels .== 0] .= RGB(0,0,0)
+    return img_coloured
+end
 
 
 """

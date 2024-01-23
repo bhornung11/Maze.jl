@@ -22,6 +22,8 @@ function select_lines_to_draw_component(
         graph.image_components, links
     )
 
+    empty_link = Array{Int}(undef, 1, 1)
+
     # loop over all vertices
     for vertex in get_vertices(graph)
 
@@ -34,7 +36,11 @@ function select_lines_to_draw_component(
         sides = get_rectangle_sides(vertex, n_row, width)
 
         # look up which sides not to render
-        idcs = sides_to_omit[vertex]
+        if length(links) == 0
+            idcs = empty_link
+       else
+            idcs = sides_to_omit[vertex]
+        end
 
         # select and append lines to draw
         append!(lines, sides[setdiff(1:end, idcs)])

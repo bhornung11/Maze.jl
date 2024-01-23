@@ -18,23 +18,24 @@ struct ImageGridComponentGraph{Int} <: Graph{Int}
     connectivity::DictGraph{Int}
     "`image_components::Array{Int, 2}`: 2D array of labeled image components"
     image_components::Array{Int, 2}
-    "`foreground::Int`: value to mark foreground pixels"
-    foreground::Int
 end
 
 
 """
-ImageGridComponentGraph(x::Array{Int, 2}, foreground::Int)
+ImageGridComponentGraph(x::Array{Int, 2})
 
 # Arguments
 - x::Array{Int, 2}: 2D array of labeled image components
-- foreground::Int: value to mark foreground pixels
 
 # Returns
 - unnamed::ImageGridComponentGraph : graph representation of the image
     foreground and connected components
+
+# Notes
+The foreground is always zero. The connected components are labeled
+with negative integers.
 """
-function ImageGridComponentGraph(x::Array{Int, 2}, foreground::Int)
+function ImageGridComponentGraph(x::Array{Int, 2})
 
     n_row, n_col = size(x)
     
@@ -47,13 +48,12 @@ function ImageGridComponentGraph(x::Array{Int, 2}, foreground::Int)
     for j in 1:n_col
         for i in 1:n_row
        
-            label = x[i, j]
-            # only investigate grid rectangles
-            if label != foreground
+            # skip foreground (labeled components)
+            if x[i, j] != 0
                 continue
             end
 
-            # calculate 1D index
+            # calculate 1D index which will be the vertex
             source = index_2d_to_1d_grid(i, j, n_row)
 
             # get neighbours
@@ -61,16 +61,16 @@ function ImageGridComponentGraph(x::Array{Int, 2}, foreground::Int)
 
             # add to graph
             for target in targets
-                # use grid index if the target is a rectangle
-                # otherwise use component index
-                target = (x[target] == foreground) ? target : x[target]
+                # if the neighbour is a connected component use its label as the vertex
+                # otherwise use the 1D grid index
+                target = (x[target] == 0) ? target : x[target]
                 push!(connectivity, source, target)
                 push!(connectivity, target, source)
             end
 
         end
     end
-    ImageGridComponentGraph(connectivity, x, foreground)
+    ImageGridComponentGraph(connectivity, x)
 
 end
 

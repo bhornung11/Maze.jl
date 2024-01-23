@@ -23,7 +23,7 @@ function index_1d_to_2d_grid(index::Int, n_row::Int)
 
     i = (k = index % n_row) == 0 ? n_row : k
     j = k == 0 ? div(index, n_row) : div(index, n_row) + 1
-    return j, i
+    return i, j
 end
 
 

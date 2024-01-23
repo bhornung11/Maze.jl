@@ -62,6 +62,7 @@ function select_sides_to_omit_component(
                     # only save the grid rectangle side
                     # (components are rendered indirectly)
                     push!(sides_to_omit, source, side_source)
+                    break
                 end
             end
         else
