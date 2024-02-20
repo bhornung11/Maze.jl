@@ -41,8 +41,8 @@ function convert_links_to_points_rectangle(
     k = 1
     for i in 1:n_col
         for j in 1:n_row
-            x[k] = i * 2 - 1
-            y[k] = j * 2 - 1
+            x[k] = j * 2 - 1
+            y[k] = i * 2 - 1
             k += 1
         end
     end

@@ -36,7 +36,7 @@ equal to a value.
 function extract_coords(x::Array{Int, 2}, val::Int)
 
     n_row, n_col = size(x)
-    
+
     # avoid repated allocation on the expense of
     # two passes in total
     n_xy = sum(el == val for el in x)
@@ -52,4 +52,21 @@ function extract_coords(x::Array{Int, 2}, val::Int)
         end
     end
     return xy
+end
+
+
+function sample_colour_wheel(
+        n_colour::Int,
+        hue_low::Float64=0.0,
+        hue_high::Float64=360.0,
+        saturation::Float64=1.0,
+        value::Float64=1.0
+    )
+
+    delta = (hue_high - hue_low) / n_colour
+    colours = [
+        convert(RGB{N0f8}, HSV(hue_low + i * delta, saturation, value))
+        for i in 0:n_colour - 1
+    ]
+
 end

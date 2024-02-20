@@ -4,8 +4,6 @@
 
 
 export ImageGridComponentGraph
-export get_neighbours
-export get_vertices
 
 
 """

@@ -1,10 +1,14 @@
-
+"""
+Delaunay triangulation graph and utilities.
+"""
 
 
 using DelaunayTriangulation
 
 
 export TriGraph
+export remove_from_graph!
+export remove_from_neighbours!
 
 
 """
@@ -17,6 +21,8 @@ struct TriGraph{T} <: Graph{T}
     mapping::Dict{Tuple{Int, Int}, Tuple{T, T}}
     "`tri::DelaunayTriangulation.Triangulation`: triangulation"
     tri::DelaunayTriangulation.Triangulation
+    "triangles::Array{Int, 2}"
+    triangles::Array{Int, 2}
 end
 
 
@@ -43,14 +49,14 @@ end
 TriGraph{T}(tri::DelaunayTriangulation.Triangulation) where T
 
 # Arguments
-- tri::DelaunayTriangulation.Triangulation: triangulation
+- `tri::DelaunayTriangulation.Triangulation`: triangulation
 
 # Returns
 - unnamed::TriGraph{T}: traingulation graph
 """
 function TriGraph{T}(tri::DelaunayTriangulation.Triangulation) where T
-    graph, mapping = create_triangle_graph(tri)
-    TriGraph{T}(graph.graph, mapping, tri)
+    graph, mapping, triangles = create_triangle_graph(tri)
+    TriGraph{T}(graph.graph, mapping, tri, triangles)
 end
 
 
@@ -58,7 +64,7 @@ end
 get_vertices(graph::TriGraph{T})::Array{T, 1} where T
 
 # Parameters
-- graph::TriGraph{T}): triangulation graph
+- `graph::TriGraph{T})`: triangulation graph
 
 # Returns
 - unnamed::Array{T, 1}:: all triangles
@@ -82,6 +88,45 @@ Retrieves the triangle adjacent to a query triangle.
 """
 function get_neighbours(graph::TriGraph{T}, vertex::T)::Array{T, 1} where T
     return graph.graph[vertex]
+end
+
+
+"""
+function remove_from_neighbours!(graph::TriGraph{T}, source::T, target::T) where T
+
+Removes a neighbour from the neighbours.
+
+# Arguments
+- graph::TriGraph{T}
+- source::T : source
+- target::T : target to remove
+
+# Returns
+- n_neighbour::Int : number of neighbours after deletion
+"""
+function remove_from_neighbours!(graph::TriGraph{T}, source::T, target::T) where T
+    neighbours = graph.graph[source]
+    deleteat!(neighbours, findall(x->x==target, neighbours))
+    n_neighbour = length(neighbours)
+    return n_neighbour
+end
+
+
+"""
+remove_from_graph!(graph::TriGraph{T}, vertex::T)::Array{T, 1} where T
+
+# Arguments
+- graph::TriGraph{T}: triangle connectivity graph
+- vertex::T: query triangle
+
+# Returns
+- nothing : removes vertex from the graph
+
+# Note
+- may leave dangling edges behind.
+"""
+function remove_from_graph!(graph::TriGraph{T}, vertex::T) where T
+    delete!(graph.graph, vertex)
 end
 
 
@@ -138,6 +183,18 @@ function create_triangle_graph(
 
     end
 
-    return graph, mapping_triangle_edge
+    triangles = Array{Int, 2}(undef, 3, length(bookkeep_triangle))
+
+    for ((s, t, u), i) in bookkeep_triangle
+        triangles[1, i] = s
+        triangles[2, i] = t
+        triangles[3, i] = u
+    end
+
+    return graph, mapping_triangle_edge, triangles
 
 end
+
+Base.length(graph::TriGraph) = length(graph.graph)
+
+Base.in(vertex, graph::TriGraph) = haskey(graph.graph, vertex)

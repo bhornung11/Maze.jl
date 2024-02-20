@@ -48,7 +48,7 @@ function sample_drawing_points_2d(
     )
 
     # limit the number of points if needed
-    #n_point = n_point_max < n_point ? n_point_max : n_point
+    n_point = n_point_max < n_point ? n_point_max : n_point
 
     # sample
     points = [

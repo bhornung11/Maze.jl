@@ -124,3 +124,9 @@ function decompose_graph(graph::Graph)::Array{Graph}
 
     return components
 end
+
+Base.delete!(graph::DictGraph, vertex) = begin delete!(graph.graph, vertex) end
+
+Base.length(graph::DictGraph) = length(graph.graph)
+
+Base.haskey(graph::DictGraph, vertex) = haskey(graph.graph, vertex)
