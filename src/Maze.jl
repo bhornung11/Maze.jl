@@ -31,6 +31,7 @@ include("prep_drawing/prep_drawing_triangle.jl")
 
 
 # rendering
+include("drawing/draw_border.jl")
 include("drawing/draw_line.jl")
 include("drawing/draw_rectangle.jl")
 include("drawing/draw_image_grid_component.jl")

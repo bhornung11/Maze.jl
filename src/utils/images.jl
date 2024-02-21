@@ -3,6 +3,7 @@ Preps and posts.
 """
 
 using Colors
+using Images
 
 export colour_labeled_image
 export extract_coords

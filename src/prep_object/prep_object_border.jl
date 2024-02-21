@@ -2,6 +2,7 @@
 Border graph obejct preparation utilities.
 """
 
+export trim_in_ellipse
 
 """
 function trim_in_ellipse(x::Array{T, 2}, x_c::T, y_c::T, r_x::T, r_y::T) where T

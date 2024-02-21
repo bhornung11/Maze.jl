@@ -2,6 +2,7 @@
 Border graph drawing hepers.
 """
 
+export extract_border_segments
 
 """
 function extract_border_segments(graph::TriGraph, labels::Dict{Int, Int})
